@@ -1,6 +1,6 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
-
+.history
 *~
 *.sw[mnpcod]
 *.log
@@ -35,5 +35,3 @@ UserInterfaceState.xcuserstate
 node_modules
 venv/
 .vscode
-
-*node_modules*
