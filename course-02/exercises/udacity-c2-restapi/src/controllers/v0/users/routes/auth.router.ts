@@ -12,7 +12,9 @@ const router: Router = Router();
 
 async function generatePassword(plainTextPassword: string): Promise<string> {
   //@TODO Use Bcrypt to Generated Salted Hashed Passwords
-  return;
+  const rounds = 10;
+  const salt = await bcrypt.genSalt(rounds);
+  return await bcrypt.hash(plainTextPassword, salt);
 }
 
 async function comparePasswords(
@@ -20,7 +22,7 @@ async function comparePasswords(
   hash: string
 ): Promise<boolean> {
   //@TODO Use Bcrypt to Compare your password to your Salted Hashed Password
-  return;
+  return await bcrypt.compare(plainTextPassword, hash);
 }
 
 function generateJWT(user: User): string {
@@ -113,7 +115,7 @@ router.post("/", async (req: Request, res: Response) => {
 
   // find the user
   const user = await User.findByPk(email);
-  // check that user doesnt exists
+  // check that user doesn't exists
   if (user) {
     return res
       .status(422)
