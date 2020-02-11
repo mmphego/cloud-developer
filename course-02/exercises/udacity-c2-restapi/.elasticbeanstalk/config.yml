@@ -1,6 +1,6 @@
 branch-defaults:
   default:
-    environment: udacity-mmphego-dev-dev
+    environment: udacity-mmphego-dev-dev2
     group_suffix: null
 deploy:
   artifact: ./www/Archive.zip
