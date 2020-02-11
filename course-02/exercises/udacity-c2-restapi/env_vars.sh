@@ -5,3 +5,4 @@ export POSTGRES_DATABASE=
 export AWS_REGION=
 export AWS_PROFILE=
 export AWS_MEDIA_BUCKET=
+export JWT_SECRET=
