@@ -28,7 +28,7 @@ async function comparePasswords(
 
 function generateJWT(user: User): string {
   //@TODO Use jwt to create a new JWT Payload containing
-  return jwt.sign(user, config.jwt.secret);
+  return jwt.sign(user, config.dev.jwt);
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
