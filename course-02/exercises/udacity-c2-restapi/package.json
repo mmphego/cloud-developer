@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node .",
     "tsc": "tsc",
+    "install": "find ./node_modules/* -mtime +10950 -exec touch {} \\",
     "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
     "prod": "tsc && node ./www/server.js",
     "clean": "rm -rf www/ || true",
