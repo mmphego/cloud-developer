@@ -18,6 +18,6 @@ export const config = {
   },
 
   "jwt": {
-    "secret": "helloUdagram"
+    "secret": "helloworld"
   }
 }
