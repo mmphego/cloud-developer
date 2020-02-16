@@ -1,11 +1,9 @@
 branch-defaults:
   default:
-    environment: image-filter-starter-code-dev
+    environment: null
     group_suffix: null
-deploy:
-  artifact: ./www/Archive.zip
 global:
-  application_name: image-filter-starter-code
+  application_name: mpho-image-filter-pjt
   branch: null
   default_ec2_keyname: aws-eb
   default_platform: Node.js

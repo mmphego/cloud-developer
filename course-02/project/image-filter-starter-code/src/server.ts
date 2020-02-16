@@ -27,16 +27,27 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
   /**************************************************************************** */
   app.get("/filteredimage", async (req, res) => {
-    let image_url = req.query.image_url;
+    const image_url = req.query.image_url;
     if (image_url) {
-      filterImageFromURL(image_url).then(response => {
-        res.sendFile(response);
-        res.on("finish", function() {
-          deleteLocalFiles([response]);
+      try {
+        await filterImageFromURL(image_url).then(response => {
+          res.sendFile(response);
+          res.on("finish", function() {
+            deleteLocalFiles([response]);
+          });
         });
-      });
+      } catch (error) {
+        res.status(500).send({
+          status: "failed",
+          message: "something went wrong, investigate.",
+          verbose: error
+        });
+      }
     } else {
-      res.status(404).send("Send the correct `image_url`");
+      res.status(404).send({
+        status: "failed",
+        message: "Please provide correct `image_url`."
+      });
     }
   });
   //! END @TODO1
