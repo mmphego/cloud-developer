@@ -12,9 +12,8 @@ import { config } from "../../../../config/config";
 const router: Router = Router();
 
 async function generatePassword(plainTextPassword: string): Promise<string> {
-  //@TODO Use Bcrypt to Generated Salted Hashed Passwords
-  const rounds = 10;
-  const salt = await bcrypt.genSalt(rounds);
+  const saltRounds = 10;
+  let salt = await bcrypt.genSalt(saltRounds);
   return await bcrypt.hash(plainTextPassword, salt);
 }
 
@@ -22,13 +21,11 @@ async function comparePasswords(
   plainTextPassword: string,
   hash: string
 ): Promise<boolean> {
-  //@TODO Use Bcrypt to Compare your password to your Salted Hashed Password
   return await bcrypt.compare(plainTextPassword, hash);
 }
 
 function generateJWT(user: User): string {
-  //@TODO Use jwt to create a new JWT Payload containing
-  return jwt.sign(user, config.dev.jwt);
+  return jwt.sign(user.short(), config.jwt.secret);
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -36,7 +33,6 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     return res.status(401).send({ message: "No authorization headers." });
   }
 
-  // Bearer: token
   const token_bearer = req.headers.authorization.split(" ");
   if (token_bearer.length != 2) {
     return res.status(401).send({ message: "Malformed token." });
@@ -44,7 +40,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
   const token = token_bearer[1];
 
-  return jwt.verify(token, config.dev.jwt, (err, decoded) => {
+  return jwt.verify(token, config.jwt.secret, (err, decoded) => {
     if (err) {
       return res
         .status(500)
@@ -86,15 +82,24 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 
   // check that the password matches
-  const authValid = await comparePasswords(password, user.password_hash);
+  const authValid = await comparePasswords(password, user.password_hash).catch(
+    e => {
+      console.log(e);
+      throw e;
+    }
+  );
 
   if (!authValid) {
     return res.status(401).send({ auth: false, message: "Unauthorized" });
   }
 
   // Generate JWT
-  const jwt = generateJWT(user);
-
+  let jwt;
+  try {
+    jwt = generateJWT(user);
+  } catch (e) {
+    throw e;
+  }
   res.status(200).send({ auth: true, token: jwt, user: user.short() });
 });
 
@@ -125,7 +130,10 @@ router.post("/", async (req: Request, res: Response) => {
       .send({ auth: false, message: "User may already exist" });
   }
 
-  const password_hash = await generatePassword(plainTextPassword);
+  const password_hash = await generatePassword(plainTextPassword).catch(e => {
+    console.log(e);
+    throw e;
+  });
 
   const newUser = await new User({
     email: email,
