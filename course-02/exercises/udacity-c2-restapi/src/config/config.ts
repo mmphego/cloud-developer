@@ -18,6 +18,6 @@ export const config = {
   },
 
   "jwt": {
-    "secret": "helloworld"
+    "secret": process.env.JWT_SECRET
   }
 }
