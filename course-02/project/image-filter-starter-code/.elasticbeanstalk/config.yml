@@ -1,7 +1,9 @@
 branch-defaults:
   default:
-    environment: null
+    environment: mpho-image-filter-pjt-dev
     group_suffix: null
+deploy:
+  artifact: ./www/Archive.zip
 global:
   application_name: mpho-image-filter-pjt
   branch: null
