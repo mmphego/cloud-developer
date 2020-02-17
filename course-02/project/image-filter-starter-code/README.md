@@ -31,6 +31,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 Follow the process described in the course to `eb init` a new application and `eb create` a new environment to deploy your image-filter service! Don't forget you can use `eb deploy` to push changes.
 
+
 ## Stand Out (Optional)
 
 ### Refactor the course RESTapi
@@ -46,3 +47,9 @@ Prevent requests without valid authentication headers.
 
 Add your own domain name and have it point to the running services (try adding a subdomain name to point to the processing server)
 > !NOTE: Domain names are not included in AWS’ free tier and will incur a cost.
+
+# Results after deployment
+
+URL access after deployment: http://mpho-image-filter-pjt-dev.us-east-1.elasticbeanstalk.com/filteredimage?image_url=https://cdn.pixabay.com/photo/2015/09/06/11/44/south-africa-927281_640.jpg
+
+![image](https://user-images.githubusercontent.com/7910856/74624053-a3c3b600-514f-11ea-94cd-03e0bbdff6b7.png)
