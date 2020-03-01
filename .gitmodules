@@ -1,3 +1,3 @@
 [submodule "c3-microservices"]
-	path = c3-microservices
+	path = course-03-microservices
 	url = git@github.com:mmphego/nd9990-c3-microservices-v1.git
