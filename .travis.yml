@@ -6,6 +6,7 @@ env:
   - DOCKER_COMPOSE_VERSION=1.23.2
 
 before_install:
+  - git submodule update --init --remote --recursive
   - docker -v && docker-compose -v
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
