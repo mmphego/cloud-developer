@@ -4,18 +4,32 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
+
+environment:
+  # client secret:
+  Auth0_Client_Secret : 5TKU-aUGSPdinxdG6lYutNG18e-cO0FQROOrTTQ1B75uexFp-yRcjfvOfceIB91N
+
 
 functions:
 
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource:
+          - "*"
 
   # TODO: Configure this function
   GetTodos:
