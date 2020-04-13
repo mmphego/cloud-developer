@@ -22,12 +22,14 @@ provider:
   region: ${opt:region, 'us-east-1'}
 
 environment:
-  # client secret:
-  Auth0_Client_Secret : 5TKU-aUGSPdinxdG6lYutNG18e-cO0FQROOrTTQ1B75uexFp-yRcjfvOfceIB91N
-
+  TODOS_TABLE: todos-${self:provider.stage}
+  TODOS_ID_INDEX: todos-idx-${self:provider.environment.TODOS_TABLE}
+  TODOS_S3_BUCKET: serverless-todos-attachments-${self:provider.stage}
+  SIGNED_URL_EXPIRATION: 600
+  # client secret: store this elsewhere!
+  Auth0_Client_Secret: 5TKU-aUGSPdinxdG6lYutNG18e-cO0FQROOrTTQ1B75uexFp-yRcjfvOfceIB91N
 
 functions:
-
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
     iamRoleStatements:
@@ -36,7 +38,7 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
         Resource:
-          - "*"
+          - '*'
 
   # TODO: Configure this function
   GetTodos:
@@ -48,8 +50,19 @@ functions:
           method: get
           path: todos
 
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_ID_INDEX}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource:
+          - '*'
+
   # TODO: Configure this function
-  GetTodos:
   CreateTodo:
     handler: src/lambda/http/createTodo.handler
     events:
@@ -58,6 +71,18 @@ functions:
           cors: true
           method: post
           path: todos
+
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource:
+          - '*'
 
   # TODO: Configure this function
   UpdateTodo:
@@ -69,6 +94,18 @@ functions:
           method: patch
           path: todos/{todoId}
 
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource:
+          - '*'
+
   # TODO: Configure this function
   DeleteTodo:
     handler: src/lambda/http/deleteTodo.handler
@@ -79,6 +116,18 @@ functions:
           method: delete
           path: todos/{todoId}
 
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource:
+          - '*'
+
   # TODO: Configure this function
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
@@ -88,6 +137,18 @@ functions:
           cors: true
           method: post
           path: todos/{todoId}/attachment
+
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.TODOS_S3_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource:
+          - '*'
 
 resources:
   Resources:
@@ -104,7 +165,7 @@ resources:
           Ref: ApiGatewayRestApi
 
     TodosDynamoDBTable:
-      Type: "AWS::DynamoDB::Table"
+      Type: AWS::DynamoDB::Table
       TableName: ${self:provider.environment.TODOS_TABLE}
       BillingMode: PAY_PER_REQUEST
       Properties:
@@ -123,12 +184,12 @@ resources:
         LocalSecondaryIndexes:
           - IndexName: ${self:provider.environment.TODOS_ID_INDEX}
             KeySchema:
-            - AttributeName: userId
-              KeyType: HASH
-            - AttributeName: createdAt
-              KeyType: RANGE
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
             Projection:
-              ProjectionType: ALL
+              ProjectionType: ALL # What attributes will be copied to an index
 
     AttachmentsBucket:
       Type: AWS::S3::Bucket
@@ -136,8 +197,7 @@ resources:
         BucketName: ${self:provider.environment.TODOS_S3_BUCKET}
         CorsConfiguration:
           CorsRules:
-            -
-              AllowedOrigins:
+            - AllowedOrigins:
                 - '*'
               AllowedHeaders:
                 - '*'
@@ -163,12 +223,12 @@ resources:
     Properties:
       PolicyDocument:
         Id: MyPolicy
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Sid: PublicReadForGetBucketObjects
             Effect: Allow
             Principal: '*'
             Action: 's3:GetObject'
             Resource: 'arn:aws:s3:::${self:provider.environment.TODOS_S3_BUCKET}/*'
-      Bucket: !Ref AttachmentsBucket
-
+      Bucket:
+        Ref: AttachmentsBucket
