@@ -137,7 +137,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">TODOs List</Header>
 
         {this.renderCreateTodoInput()}
 
@@ -160,7 +160,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="What do you want done?"
             onChange={this.handleNameChange}
           />
         </Grid.Column>
