@@ -18,16 +18,27 @@ provider:
   name: aws
   runtime: nodejs12.x
 
+  tracing:
+    lambda: true
+    apiGateway: true
+
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
-environment:
-  TODOS_TABLE: todos-${self:provider.stage}
-  TODOS_ID_INDEX: todos-idx-${self:provider.environment.TODOS_TABLE}
-  TODOS_S3_BUCKET: serverless-todos-attachments-${self:provider.stage}
-  SIGNED_URL_EXPIRATION: 600
-  # client secret: store this elsewhere!
-  Auth0_Client_Secret: 5TKU-aUGSPdinxdG6lYutNG18e-cO0FQROOrTTQ1B75uexFp-yRcjfvOfceIB91N
+  environment:
+    TODOS_TABLE: todos-${self:provider.stage}
+    TODOS_ID_INDEX: todos-idx-${self:provider.environment.TODOS_TABLE}
+    TODOS_S3_BUCKET: serverless-todos-attachments-${self:provider.stage}
+    SIGNED_URL_EXPIRATION: 600
+    # client secret: store this elsewhere!
+    Auth0_Client_Secret: 5TKU-aUGSPdinxdG6lYutNG18e-cO0FQROOrTTQ1B75uexFp-yRcjfvOfceIB91N
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - codedeploy:*
+      Resource:
+        - '*'
 
 functions:
   Auth:
