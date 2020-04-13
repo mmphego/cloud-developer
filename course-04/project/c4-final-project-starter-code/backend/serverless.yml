@@ -6,13 +6,13 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
-  - serverless-dynamodb-local
-  - serverless-offline
+  # - serverless-dynamodb-local
+  # - serverless-offline
 
 # Read: https://github.com/dherault/serverless-offline
-custom:
-  serverless-offline:
-    port: 3003
+# custom:
+#   serverless-offline:
+#     port: 3003
 
 provider:
   name: aws
