@@ -14,22 +14,3 @@ export function getUserId(event: APIGatewayProxyEvent): string {
 
   return parseUserId(jwtToken)
 }
-
-/**
- * Retrieve the token from the authorization header
- *
- * @param authHeader Authorization header
- *
- * @returns a token from the authorization header
- */
-export const getToken = (authHeader: string): string => {
-  if (!authHeader) throw new Error('No authentication header')
-
-  if (!authHeader.toLowerCase().startsWith('bearer '))
-    throw new Error('Invalid authentication header')
-
-  const split = authHeader.split(' ')
-  const token = split[1]
-
-  return token
-}
