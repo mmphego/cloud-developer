@@ -92,3 +92,29 @@ functions:
 resources:
   Resources:
     # TODO: Add any necessary AWS resources
+    TodosDynamoDBTable:
+      Type: "AWS::DynamoDB::Table"
+      TableName: ${self:provider.environment.TODOS_TABLE}
+      BillingMode: PAY_PER_REQUEST
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+          - AttributeName: todoId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: todoId
+            KeyType: RANGE
+        LocalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.TODOS_ID_INDEX}
+            KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+            - AttributeName: createdAt
+              KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
