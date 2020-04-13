@@ -20,10 +20,12 @@
     "@types/node": "^10.14.4",
     "aws-sdk": "^2.433.0",
     "serverless-aws-documentation": "^1.1.0",
+    "serverless-dynamodb-local": "^0.2.39",
     "serverless-iam-roles-per-function": "^1.0.4",
+    "serverless-offline": "^6.1.4",
     "serverless-plugin-canary-deployments": "^0.4.7",
     "serverless-reqvalidator-plugin": "^1.0.3",
-    "serverless-webpack": "^5.2.0",
+    "serverless-webpack": "^5.3.1",
     "ts-loader": "^5.3.3",
     "typescript": "^3.4.1",
     "webpack": "^4.29.6"
