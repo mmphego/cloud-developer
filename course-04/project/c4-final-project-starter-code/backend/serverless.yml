@@ -71,7 +71,7 @@ functions:
           cors: true
           method: post
           path: todos
-
+          reqValidatorName: RequestBodyValidator
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -93,7 +93,7 @@ functions:
           cors: true
           method: patch
           path: todos/{todoId}
-
+          reqValidatorName: RequestBodyValidator
     iamRoleStatements:
       - Effect: Allow
         Action:
