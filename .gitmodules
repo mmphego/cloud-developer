@@ -1,3 +1,6 @@
 [submodule "c3-microservices"]
 	path = course-03-microservices
 	url = https://github.com/mmphego/nd9990-c3-microservices-v1.git
+[submodule "udacity-cloud-developer-capstone-project"]
+	path = udacity-cloud-developer-capstone-project
+	url = https://github.com/mmphego/udacity-cloud-developer-capstone-project.git
